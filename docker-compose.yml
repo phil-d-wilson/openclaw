@@ -1,0 +1,41 @@
+version: '2.1'
+
+services:
+  tailscale:
+    build: ./tailscale
+    restart: on-failure
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    labels:
+      io.balena.features.kernel-modules: '1'
+    environment:
+      - TS_HOSTNAME=openclaw-jetson
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_SERVE_CONFIG=/config/serve.json
+    volumes:
+      - ts-state:/var/lib/tailscale
+    tmpfs:
+      - /tmp
+      - /var/run/
+
+  openclaw:
+    build: ./openclaw
+    restart: always
+    network_mode: host
+    privileged: true
+    init: true
+    labels:
+      io.balena.features.dbus: '1'
+      io.balena.features.kernel-modules: '1'
+    environment:
+      - OPENCLAW_DOCKER_INIT_SCRIPT=/opt/openclaw-init/fix-browser.sh
+      - OPENCLAW_CUSTOM_CONFIG=/opt/openclaw-init/custom-openclaw.json
+
+    volumes:
+      - openclaw-data:/data
+
+volumes:
+  openclaw-data:
+  ts-state:
