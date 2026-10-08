@@ -33,10 +33,20 @@ services:
     environment:
       - OPENCLAW_DOCKER_INIT_SCRIPT=/opt/openclaw-init/fix-browser.sh
       - OPENCLAW_CUSTOM_CONFIG=/opt/openclaw-init/custom-openclaw.json
-
     volumes:
       - openclaw-data:/data
+
+  ollama:
+    image: ollama/ollama:latest
+    restart: always
+    ports:
+      - "11434:11434"
+    labels:
+      io.balena.features.gpu: '1'
+    volumes:
+      - ollama-data:/root/.ollama
 
 volumes:
   openclaw-data:
   ts-state:
+  ollama-data:
