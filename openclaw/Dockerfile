@@ -1,4 +1,4 @@
-FROM coollabsio/openclaw:latest
+FROM coollabsio/openclaw:2026.9.8-arm64
 
 # Add process tools so we can ps/kill without losing the container
 RUN apt-get update && apt-get install -y --no-install-recommends procps && \
